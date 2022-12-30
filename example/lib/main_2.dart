@@ -12,7 +12,7 @@ import 'package:mapbox_maps_example/polyline_annotations.dart';
 import 'package:mapbox_maps_example/tile_json.dart';
 import 'package:mapbox_maps_example/vector_tile_source.dart';
 
-import 'bottom_nav_bar.dart';
+import 'bottom_nav_bar2.dart';
 import 'full_map.dart';
 import 'gestures.dart';
 import 'location.dart';
@@ -42,7 +42,7 @@ final List<ExamplePage> _allPages = <ExamplePage>[
   AnimatedRoutePage(),
 ];
 
-class MapsDemo extends StatelessWidget {
+class MapsDemo2 extends StatelessWidget {
   // FIXME: You need to pass in your access token via the command line argument
   // --dart-define=ACCESS_TOKEN=ADD_YOUR_TOKEN_HERE
   // It is also possible to pass it in while running the app via an IDE by
@@ -66,7 +66,7 @@ class MapsDemo extends StatelessWidget {
       appBar: AppBar(title: const Text('MapboxMaps examples')),
       body: ACCESS_TOKEN.isEmpty || ACCESS_TOKEN.contains("YOUR_TOKEN")
           ? buildAccessTokenWarning()
-          : BottomNavBar(),
+          : BottomNavBar2(),
       // : ListView.separated(
       //     itemCount: _allPages.length,
       //     separatorBuilder: (BuildContext context, int index) =>
@@ -108,5 +108,5 @@ class MapsDemo extends StatelessWidget {
 }
 
 void main() {
-  runApp(MaterialApp(home: MapsDemo()));
+  runApp(MaterialApp(home: MapsDemo2()));
 }

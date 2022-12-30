@@ -1,8 +1,10 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart' show ByteData, rootBundle;
+import 'package:flutter/services.dart' show ByteData, Uint8List, rootBundle;
+import 'package:mapbox_maps_example/utils.dart';
 import 'package:mapbox_maps_flutter/mapbox_maps_flutter.dart';
+import 'package:turf/helpers.dart';
 
 import 'main.dart';
 import 'page.dart';
@@ -32,9 +34,42 @@ class MapInterfacePageBodyState extends State<MapInterfacePageBody> {
   var userAnimationInProgress = true;
   var showTileBorders = true;
 
+  PointAnnotation? pointAnnotation;
+  PointAnnotationManager? pointAnnotationManager;
+  void createOneAnnotation(Uint8List list) {
+    pointAnnotationManager
+        ?.create(PointAnnotationOptions(
+            geometry: Point(
+                coordinates: Position(
+              0.381457,
+              6.687337,
+            )).toJson(),
+            textField: "custom-icon",
+            textOffset: [0.0, -2.0],
+            textColor: Colors.red.value,
+            iconSize: 1.3,
+            iconOffset: [0.0, -5.0],
+            symbolSortKey: 10,
+            image: list))
+        .then((value) => pointAnnotation = value);
+  }
+
   _onMapCreated(MapboxMap mapboxMap) {
     this.mapboxMap = mapboxMap;
-    _addLayerAndSource();
+    // _addLayerAndSource();
+
+    mapboxMap.annotations.createPointAnnotationManager().then((value) async {
+      pointAnnotationManager = value;
+
+      var carOptions = <PointAnnotationOptions>[];
+      for (var i = 0; i < 2; i++) {
+        carOptions.add(PointAnnotationOptions(
+            geometry: createRandomPoint().toJson(), iconImage: "car-15"));
+      }
+      pointAnnotationManager?.createMulti(carOptions);
+      // pointAnnotationManager
+      //     ?.addOnPointAnnotationClickListener(AnnotationClickListener());
+    });
   }
 
   @override
@@ -315,7 +350,8 @@ class MapInterfacePageBodyState extends State<MapInterfacePageBody> {
   @override
   Widget build(BuildContext context) {
     final MapWidget mapWidget = MapWidget(
-        key: ValueKey("mapWidget"),
+        // key: ValueKey("mapWidget"),
+        key: ValueKey("mapInterfaceWidget"),
         resourceOptions: ResourceOptions(accessToken: MapsDemo.ACCESS_TOKEN),
         onMapCreated: _onMapCreated);
 
@@ -343,21 +379,23 @@ class MapInterfacePageBodyState extends State<MapInterfacePageBody> {
       ],
     );
 
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Center(
-          child: SizedBox(
-              width: MediaQuery.of(context).size.width,
-              height: MediaQuery.of(context).size.height - 400,
-              child: mapWidget),
-        ),
-        Expanded(
-          child: ListView(
-            children: listViewChildren,
+    return Scaffold(
+      body: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Center(
+            child: SizedBox(
+                width: MediaQuery.of(context).size.width,
+                height: MediaQuery.of(context).size.height - 400,
+                child: mapWidget),
           ),
-        )
-      ],
+          Expanded(
+            child: ListView(
+              children: listViewChildren,
+            ),
+          )
+        ],
+      ),
     );
   }
 }
